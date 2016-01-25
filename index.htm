@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>DVRPC County and Municipal-Level Population Forecasts, 2010-2040 </title>
+
+    <!-- Core CSS -->
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" type="text/css">
+   <!-- <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet" type="text/css">-->
+    <link href="css/typeahead.js-bootstrap.css" rel="stylesheet" type="text/css"> <!--https://github.com/jharding/typeahead.js-bootstrap.css-->
+    <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.css" rel="stylesheet" type="text/css">
+    <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/main.css"/>
+	
+
+    <!--[if lte IE 8]>
+        <link href="http://cdn.leafletjs.com/leaflet-0.6.4/leaflet.ie.css" rel="stylesheet" type="text/css">
+        <link href="http://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome-ie7.min.css" rel="stylesheet">
+    <![endif]-->
+
+    <!-- Custom styles for this template -->
+    <style>
+    
+        
+        
+    </style>
+	
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.6.2/html5shiv.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.2.0/respond.js"></script>
+    <![endif]-->
+      <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+      <script src="http://code.highcharts.com/highcharts.js"></script>
+      <script src="http://code.highcharts.com/modules/exporting.js"></script>
+	
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+			<span><a href="http://www.dvrpc.org" target="_new"> <img class="dvrpclogo" style="margin:10px 0px 0px 15px" src="img/dvrpc_logo_small.png"/></a> 
+			<!--<img  style="margin:5px 10px 2px 10px" src="img/.png"/>-->
+			<img style="margin:10px 0px 0px 20px" src="img/header.png"/>		
+			</span> 
+        </div>
+        <ul class="nav navbar-nav navbar-right">           
+            <li class="dropdown">
+                <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="glyphicon glyphicon-wrench" style="color: white"></i>&nbsp;&nbsp;Info<b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                     <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" onclick="$('#aboutModal').modal('show'); return false;"><i class="glyphicon glyphicon-info-sign"></i>&nbsp;&nbsp;About the Project</a></li>
+                     <li class="divider"></li>
+                     <li><a href="http://www.dvrpc.org/LandUse/SOS/xls/DVRPC_Retail_District_Data_011714.xls"><i class="glyphicon glyphicon-download-alt"></i>&nbsp;&nbsp;Download Forecast Data <small style="opacity:0.6">[0.1 MB xls]</small></a></li>
+                </ul> 
+            </li>
+        </ul>
+    </div>
+
+    <div class="row" id="container">
+        <div class="col-sm-7 col-lg-7" id="map">
+			<div id="wrapper">
+		        <select class="form-control" style="margin-right:5px;">
+		            <option>Select a Forecast</option>
+		 	        <option name="layer" data-layer="POP_2040" id="layer-POP_2040" value="load_image"><i class="icon-question-sign" style="color: black">2040 Population </option>
+						   <!--<option name="layer" data-layer="Abs_10_40" id="layer-Abs_10_40" value="load_image1"><i class="icon-question-sign" style="color: black">Absolute Population Change (2010 - 2040)</option>-->
+				    <option name="layer" data-layer="Per_10_40" id="layer-Per_10_40" value="load_image2"><i class="icon-question-sign" style="color: black">Percent Population Change (2010 - 2040)</option>
+				    <option name="layer" data-layer="Emp40p" id="layer-Emp40p" value="load_image3"><i class="icon-question-sign" style="color: black">2040 Employment </option>
+						 <!--  <option name="layer" data-layer="Abs_10_40p" id="layer-Abs_10_40p" value="load_image4"><i class="icon-question-sign" style="color: black">Absolute Employment Change (2010 - 2040)</option>-->
+				    <option name="layer" data-layer="Per10_40p" id="layer-Per10_40p" value="load_image5"><i class="icon-question-sign" style="color: black">Percent Population Employment (2010 - 2040)</option>
+				</select>
+			</div>
+		    <div id="legendBox" class="legend"></div>		
+        </div>
+	    <div class="col-sm-5 col-lg-5" id="sidebar" style="padding: 10px; overflow: auto;">
+		    <ul class="nav nav-tabs" id="myTab">
+                <li class="active"><a href="#Region" data-toggle="tab">&nbsp;Region</a></li>
+                <li><a href="#EMP" data-toggle="tab">&nbsp;County</a></li>
+				<li><a href="#POP" data-toggle="tab"><i class="icon-question"></i>&nbsp;Municipal</a></li>
+            </ul>
+    		<div class="tab-content" style="padding-top: 10px;">
+                <div class="tab-pane active" id="Region">
+                    <div class="panel-group">
+                        <div class="panel panel-default">
+                            <div id="overlay-layers" >
+    							<div class="panel-body" style="padding: 0px 15px;">
+    								<div id="RegionInfo" style="height:350px";>  
+    									<div id="containerRegValue" style="height:300px;margin-bottom:-15px;"></div><br>
+    								</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    				<div id="howto" class="alert alert-info alert-block nomobile" style="margin-top:10px;">
+    						<button class="close" data-dismiss="alert" type="button">×</button>
+    						<h3 style="margin: 0;">About this map</h3>
+    						Population forecasts are an essential component of long-range transportation and land use planning. DVRPC last adopted population forecasts (through the year 2035) in July 2007. Since that time, the results of the 2010 Census have been released and the nation is experiencing an ongoing economic recession. Working closely with its member county planning staffs, DVRPC prepared regional, county and municipal-level population forecasts in five-year increments through 2040, using 2010 Census data as the base.
+    				</div>
+                </div>
+                <div class="tab-pane" id="EMP">
+                    <div class="panel-group">
+						<div class="panel panel-default">
+                            <div id="overlay-layers" class="panel-collapse collapse in">
+                                <div class="panel-body" style="padding: 0px 15px;">
+									<div id="containerCountyPopValue" style="height:300px;margin-bottom:-15px;"></div><br>
+									<div id="containerCountyEmpValue" style="margin-bottom:-15px;"></div><br>
+                                </div>
+                            </div>
+                        </div>
+					</div>	
+                </div>
+				<div class="tab-pane" id="POP">
+                    <div class="panel-group">
+					    <div class="panel panel-default">
+						    <div id="overlay-layers" class="panel-collapse collapse in" >
+    							<div id="MunHeader" ></div>
+    							<div id="containerMunPop" style="height:300px;margin-bottom:-15px;display: block;margin-left:auto;margin-right:auto;"></div><br>
+								<div id="containerMunEmp" <!--style="height:300px;margin-bottom:-15px;display: block;margin-left:auto;margin-right:auto;"--></div>
+						    </div>
+						</div>
+                    </div>
+                </div>
+            </div>			
+	    </div>
+   
+        <div class="modal fade" id="aboutModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <ul id="aboutTabs" class="nav nav-tabs">
+                            <li class="active"><a class="one"  href="#about" data-toggle="tab"><i class="icon-question-sign"></i>&nbsp;About the project</a></li>
+                            <li><a class="one"  href="#disclaimer" data-toggle="tab"><i class="icon-exclamation-sign"></i>&nbsp;Disclaimer</a></li>
+                            <li><a class="one"  href="#contact"  data-toggle="tab"><i class="icon-globe"></i>&nbsp;Contact</a></li>
+                        </ul>
+                        <div id="aboutTabsContent" class="tab-content" style="padding-top: 10px;">
+                            <div class="tab-pane fade active in" id="about">
+    							<p>
+                                    <b><font color=red>Data provided is derived from DVRPC 2040 Municipal-Level Population Forecasts in Five-Year Increments, adopted January 26, 2012</font></b>
+                                    <br>
+    								<br>
+                                    Population forecasts are an essential component of long-range transportation and land use planning. DVRPC last adopted population forecasts (through the year 2035) in July 2007. Since that time, the results of the 2010 Census have been released and the nation is experiencing an ongoing economic recession. Working closely with its member county planning staffs, DVRPC prepared regional, county and municipal-level population forecasts in five-year increments through 2040, using 2010 Census data as the base.
+
+    								Click the map to identify and view municipal-level Population Forecasts in Five-Year Increments from 2010 to 2040. 
+    							</p>    
+                            </div>
+                            <div class="tab-pane fade " id="disclaimer">
+                                <p>This web page is a public resource of general information. The Delaware Valley Regional Commission (DVRPC) makes no warranty, 
+    							representation, or guarantee as to the content, sequence, accuracy, timeliness, or completeness of any of the spatial data or database 
+    							information provided herein. DVRPC and partner state, local, and other agencies shall assume no liability for errors, omissions, or 
+    							inaccuracies in the information provided regardless of how caused; or any decision made or action taken or not taken by any person relying 
+    							on any information or data furnished within.</p>
+                            </div> 
+    						<div class="tab-pane fade " id="contact">				
+    							<p>
+    						   <b>Mary Bell</b><br/>
+    							Manager<br>
+    							Manager, Demographic and Economic Analysis<br/>
+    							Phone: 215-238-2841 <br/>
+    							<a class="two" href="mailto:mbell@dvrpc.org">mbell@dvrpc.org </a> 
+    						  </p>
+    						</div>
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+    </div><!-- /.container -->
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+	<script src="js/leaflet.viewcenter.js"></script>
+	<script src="js/leaflet.label.js"></script>
+	<script src="js/PopEmp2040.js"></script>
+	<script src="js/actions.js"></script>
+	<script src="js/esri-leaflet-geocoder.js"></script>
+
+    </body>
+</html>    
